@@ -36,15 +36,20 @@ graph TD
     C --> D[Presentation Layer - Power BI & SSRS]
 ```
 
-## 🔄 Alur Proses ETL
+## 🔄 ETL Pipeline
 ###  ⚠️ Semua proses ETL dilakukan secara manual menggunakan SQL Query di SSMS.
 Salah satu contoh skrip ETL manual via SSMS
-```bash
-INSERT INTO dim_jenis_dokumen (kode, nama)
-SELECT DISTINCT kode_dok, jenis_dokumen
-FROM staging_permohonan
-WHERE jenis_dokumen IS NOT NULL;
-```
+1. **Extract**: Data diambil dari berbagai sumber (CSV, API, input manual)
+2. **Transform**: Proses pembersihan, standarisasi, dan penggabungan
+3. **Load**: Data dimuat ke tabel dimensi dan fakta sesuai skema bintang
+
+## 📥 Dataset Sumber
+
+- `Aplikasi SIAK` - Data registrasi penduduk (real-time)
+- `Sistem Pelayanan Online` - Permohonan dokumen (harian)
+- `Manual Input Kecamatan` - Migrasi penduduk (mingguan)
+- `Laporan Statistik Bulanan` - Agregasi jumlah penduduk & performa layanan
+
 
 ## 📁 Struktur Data Warehouse
 
@@ -82,6 +87,59 @@ WHERE jenis_dokumen IS NOT NULL;
 | **Pemantauan** | SQL Profiler, DMV |
 
 ---
+## 🧪 Contoh Skrip SQL
+
+Proyek ini mencakup ratusan baris skrip SQL untuk membangun dan mengelola Data Warehouse, mulai dari definisi tabel hingga analisis data. Karena banyaknya skrip yang digunakan, hanya **beberapa potongan kode** yang ditampilkan di bawah sebagai contoh.
+
+### 📌 Contoh DDL: Tabel Dimensi Waktu
+
+```sql
+CREATE TABLE dim_time ( 
+    time_id INT PRIMARY KEY, 
+    tanggal DATE, 
+    hari INT, 
+    bulan INT, 
+    tahun INT, 
+    kuartal INT, 
+    semester INT 
+);
+```
+
+### 📌 Contoh BULK INSERT: Staging Aplikasi SIAK
+```sql
+BULK INSERT staging_siak
+FROM 'C:\path\to\Dataset Aplikasi SIAK.csv'
+WITH (
+    FIELDTERMINATOR = ';',
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 2
+);
+```
+
+### 📌 Contoh Transformasi: Isi dim_age_group
+```sql
+INSERT INTO dim_age_group (rentang_usia)
+SELECT DISTINCT
+    CASE 
+        WHEN Usia BETWEEN 0 AND 10 THEN '0-10'
+        WHEN Usia BETWEEN 11 AND 20 THEN '11-20'
+        -- dst...
+        ELSE 'Tidak Diketahui'
+    END
+FROM staging_siak
+WHERE Usia IS NOT NULL;
+```
+
+### 📌 Contoh Analitik: Distribusi Penduduk
+```sql
+SELECT dag.rentang_usia, dg.gender, 
+       SUM(fp.jumlah_penduduk) AS jumlah_penduduk
+FROM fact_population fp
+JOIN dim_age_group dag ON fp.age_group_id = dag.age_group_id
+JOIN dim_gender dg ON fp.gender_id = dg.gender_id
+GROUP BY dag.rentang_usia, dg.gender
+ORDER BY dag.rentang_usia;
+```
 
 ## 📊 Tampilan Visualisasi
 
@@ -94,7 +152,10 @@ WHERE jenis_dokumen IS NOT NULL;
 - Kinerja pelayanan publik
 - Tren migrasi penduduk
 
+
 ---
+
+
 
 ## 🧠 Evaluasi & Rencana Pengembangan
 
