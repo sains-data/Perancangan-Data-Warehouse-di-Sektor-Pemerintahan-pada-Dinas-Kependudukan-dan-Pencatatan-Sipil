@@ -126,13 +126,18 @@ WHERE jenis_dokumen IS NOT NULL;
 
 ```
 📦Disdukcapil-DW
- ┣ 📁 data_source/
- ┣ 📁 etl_scripts/
- ┣ 📁 dw_design/
- ┣ 📁 reports/
- ┣ 📁 powerbi_dashboard/
- ┣ 📄 README.md
- ┗ 📄 LICENSE
+ ┣ 📁 Dataset/
+ ┃ ┣ 📄 Dataset Aplikasi SIAK.csv
+ ┃ ┣ 📄 Dataset Kepindahan.csv
+ ┃ ┗ 📄 Dataset Pelayanan Online.csv
+ ┣ 📁 misi 1/
+ ┃ ┗ 📄 Misi1_Kelompok 10_DW_RB.pdf
+ ┣ 📁 misi 2/
+ ┃ ┗ 📄 Misi2_Kelompok 10_DW_RB.pdf
+ ┣ 📁 misi 3/
+ ┃ ┣ 📄 DW_DISDUKCAPIL.sql
+ ┃ ┗ 📄 Misi3_Kelompok 10_DW_RB.pdf
+ ┗ 📄 README.md
 ```
 
 ---
