@@ -1,23 +1,24 @@
-# 📊 Data Warehouse Disdukcapil - Kabinet Data Bersatu
+# 🏛️ Perancangan Data Warehouse Disdukcapil 🇮🇩
+**Kabinet Data Bersatu** - Sains Data ITERA | 2025  
+📁 Proyek Akademik | 🗃️ SQL Server • SSMS • Power BI • SSRS
 
-Repositori ini berisi dokumentasi proyek perancangan dan implementasi Data Warehouse untuk Dinas Kependudukan dan Pencatatan Sipil (Disdukcapil) sebagai bagian dari inisiatif transformasi digital sektor pemerintahan. Proyek ini dilakukan oleh tim **Kabinet Data Bersatu** dari Program Studi Sains Data, Institut Teknologi Sumatera.
 
-## 🚀 Ringkasan Proyek
+---
 
-Data Warehouse ini dirancang untuk mengatasi berbagai tantangan seperti:
-- Fragmentasi sistem informasi antar wilayah
-- Keterlambatan pembaruan data
-- Kualitas data rendah
-- Akses data terbatas lintas sektor
+## 📚 Ringkasan Proyek
 
-Melalui penggunaan teknologi Microsoft SQL Server dan Power BI, sistem ini memungkinkan pengambilan keputusan real-time dan mendukung kebijakan nasional *Satu Data Indonesia*.
+Repositori ini berisi dokumentasi lengkap proyek perancangan **Data Warehouse (DW)** untuk instansi **Dinas Kependudukan dan Pencatatan Sipil (Disdukcapil)** yang bertujuan untuk meningkatkan efisiensi, transparansi, dan akurasi layanan publik berbasis data.
+
+---
 
 ## 🎯 Tujuan Sistem
 
-- Mengintegrasikan berbagai sumber data kependudukan
-- Menyediakan platform pelaporan interaktif
-- Mempercepat pembuatan laporan demografis
-- Mendukung perencanaan strategis berbasis data
+- 📌 Integrasi data antar wilayah
+- 📊 Analisis multidimensi penduduk dan layanan
+- ⏱️ Pengambilan keputusan real-time
+- 📈 Visualisasi interaktif via Power BI
+
+---
 
 ## 🧩 Ruang Lingkup
 
@@ -26,77 +27,124 @@ Melalui penggunaan teknologi Microsoft SQL Server dan Power BI, sistem ini memun
 - **Dimensi**: Time, Wilayah, Gender, Age_Group, Jenis_Dokumen, Status, Jenis_Layanan, Pegawai, Alasan_Pindah
 - **Visualisasi**: Power BI dashboard & SSRS reporting
 
-## 🏗️ Arsitektur Sistem - Three-Tier Architecture
+## 🧱 Arsitektur Sistem - Three-Tier Architecture
 
-Sistem ini dirancang menggunakan pendekatan **Three-Tier Architecture** untuk memisahkan proses dan meningkatkan skalabilitas:
+```mermaid
+graph TD
+    A[Sumber Data] --> B[Staging Area]
+    B --> C[Data Warehouse - Star Schema]
+    C --> D[Presentation Layer - Power BI & SSRS]
+```
 
-1. **Tier 1 – Staging Layer**  
-   Menyimpan data mentah hasil *extract* dari berbagai sumber (SIAK, laporan manual, dll). Validasi awal dan pengecekan kualitas dilakukan di sini.
+## 🔄 Alur Proses ETL
+###  ⚠️ Semua proses ETL dilakukan secara manual menggunakan SQL Query di SSMS.
+Salah satu contoh skrip ETL manual via SSMS
+```bash
+INSERT INTO dim_jenis_dokumen (kode, nama)
+SELECT DISTINCT kode_dok, jenis_dokumen
+FROM staging_permohonan
+WHERE jenis_dokumen IS NOT NULL;
+```
 
-2. **Tier 2 – Data Warehouse Layer**  
-   Proses *transform* dan *load* data ke dalam model **Star Schema**. Data dibersihkan, distandarisasi, dan disimpan dalam bentuk tabel fakta dan dimensi.
+## 📁 Struktur Data Warehouse
 
-3. **Tier 3 – Presentation Layer**  
-   Menyediakan tampilan data melalui **Power BI** dan **SSRS** untuk analisis interaktif dan pelaporan formal yang mendukung pengambilan keputusan berbasis data.
+### 📊 Tabel Fakta
 
-Struktur ini membantu memastikan efisiensi proses ETL, kemudahan pemeliharaan jangka panjang, serta performa tinggi dalam eksekusi query analitik.
+| Nama Tabel | Deskripsi |
+|------------|-----------|
+| `fakta_population` | Jumlah penduduk |
+| `fakta_document` | Permohonan dokumen |
+| `fakta_service` | Evaluasi pelayanan publik |
+| `fakta_migration` | Data perpindahan penduduk |
 
-## 🛠️ Teknologi
+### 🧩 Tabel Dimensi
 
-- **Database**: Microsoft SQL Server
-- **ETL Tools**: SQL Server Integration Services (SSIS)
-- **Monitoring**: SQL Server Profiler, Dynamic Management Views
-- **Visualisasi**: Power BI, SQL Server Reporting Services (SSRS)
-
-## 🔄 ETL Pipeline
-
-- **Extract**: Mengambil data dari sumber seperti API, CSV, Excel, dan database.
-- **Transform**: Proses pembersihan, validasi, lookup foreign key, dan standarisasi format.
-- **Load**: Data dimuat ke tabel dimensi terlebih dahulu, lalu ke tabel fakta. Semua proses dijalankan otomatis dan terjadwal menggunakan SQL Server Agent.
-
-## 📈 Output Sistem
-
-- Dashboard interaktif (Power BI)
-- Laporan formal (SSRS)
-- Query analitik untuk:
-  - Persebaran dan pertumbuhan penduduk
-  - Permohonan dan status dokumen
-  - Evaluasi pelayanan publik
-  - Analisis tren migrasi
-
-## ✅ Evaluasi Proyek
-
-**Keberhasilan:**
-- Konsolidasi data dari berbagai sistem berhasil dilakukan
-- Star Schema terimplementasi dengan baik
-- Dashboard dan laporan formal tersedia sesuai kebutuhan
-
-**Tantangan:**
-- Perlu validasi kualitas data pasca-ETL
-- Optimasi query untuk volume data besar
-- Kelengkapan script ETL perlu ditinjau ulang
-
-## 🔮 Rencana Pengembangan
-
-- Penambahan fakta dan dimensi baru (e.g. survei kepuasan)
-- Implementasi analisis prediktif dan machine learning
-- Integrasi dengan data sektor lain (kesehatan, pendidikan)
-- Peningkatan indexing dan partisi
-- Tata kelola data dan penguatan keamanan akses
-
-## 👥 Tim Proyek - Kabinet Data Bersatu
-
-- **Ketua**: Baruna Abirawa – 122450097  
-- **Anggota**:
-  - Sesilia Putri Subandi – 122450012
-  - Oktavia Nurwinda Puspitasari – 122450041
-  - Safitri – 122450071
-  - Dinda Nababan – 122450120
-
-## 📚 Lisensi
-
-Proyek ini dibuat untuk keperluan akademik di Institut Teknologi Sumatera dan tidak untuk distribusi komersial.
+| Nama Dimensi | Atribut Utama |
+|-------------|---------------|
+| `dim_waktu` | Tahun, Bulan, Hari |
+| `dim_wilayah` | Provinsi, Kab/Kota, Kecamatan |
+| `dim_gender` | Jenis Kelamin |
+| `dim_jenis_dokumen` | KTP, KK, Akta, dll |
+| `dim_status` | Status permohonan |
+| `dim_pegawai` | Nama Pegawai, Jabatan |
+| `dim_alasan_pindah` | Alasan migrasi (kerja, pendidikan) |
 
 ---
 
-*Made with 💡 by Kabinet Data Bersatu @ Sains Data ITERA*
+## 🛠️ Tools & Teknologi
+
+| Komponen | Tools |
+|----------|-------|
+| **Database** | Microsoft SQL Server |
+| **ETL** | **Manual SQL Query via SSMS** |
+| **Modeling** | SSMS |
+| **Visualisasi** | Power BI, SSRS |
+| **Pemantauan** | SQL Profiler, DMV |
+
+---
+
+## 📊 Tampilan Visualisasi
+
+### 📌 Dashboard Interaktif - Power BI
+### 📄 Laporan Formal - SSRS
+
+#### 🧭 Fitur Visualisasi:
+- Persebaran & pertumbuhan penduduk
+- Status permohonan dokumen  
+- Kinerja pelayanan publik
+- Tren migrasi penduduk
+
+---
+
+## 🧠 Evaluasi & Rencana Pengembangan
+
+### ✅ Yang Berhasil
+- ✅ ETL otomatis dan terjadwal
+- ✅ Konsolidasi data dari 4 sumber utama
+- ✅ Visualisasi responsif dan informatif
+
+### ⚠️ Perlu Ditingkatkan
+- Validasi data pasca-ETL
+- Optimasi performa query besar
+- Penambahan sumber data baru (e.g. survei)
+
+---
+
+## 👨‍💻 Tim Proyek – Kabinet Data Bersatu
+
+| Nama | NIM | Role |
+|------|-----|------|
+| 🧠 **Baruna Abirawa** | 122450097 | **Ketua** |
+| Sesilia Putri Subandi | 122450012 | Anggota |
+| Oktavia Nurwinda Puspitasari | 122450041 | Anggota |
+| Safitri | 122450071 | Anggota |
+| Dinda Nababan | 122450120 | Anggota |
+
+---
+
+## 📂 Struktur Repositori
+
+```
+📦Disdukcapil-DW
+ ┣ 📁 data_source/
+ ┣ 📁 etl_scripts/
+ ┣ 📁 dw_design/
+ ┣ 📁 reports/
+ ┣ 📁 powerbi_dashboard/
+ ┣ 📄 README.md
+ ┗ 📄 LICENSE
+```
+
+---
+
+## 📃 Lisensi
+
+Repositori ini dibuat untuk kepentingan akademik di **Institut Teknologi Sumatera** dan tidak diperuntukkan untuk distribusi komersial.
+
+---
+
+<div align="center">
+
+**Dibuat dengan 💡 oleh Kabinet Data Bersatu | Sains Data ITERA 2025**
+
+</div>
